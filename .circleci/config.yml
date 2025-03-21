@@ -11,12 +11,15 @@ executors:
 # See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
 jobs:
 
-  playwright-job-name:
+  playwright-job:
     executor: pw-noble-development
     parallelism: 4
     steps:
+      - checkout
+      - run: npm i -D @playwright/test
+      - run: npx playwright install
+      - run: npx playwright install chrome
       - run: SHARD="$((${CIRCLE_NODE_INDEX}+1))"; npx playwright test --shard=${SHARD}/${CIRCLE_NODE_TOTAL}
-
 
   say-hello:
     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
@@ -45,5 +48,5 @@ workflows:
 
   playwright-workflow:
     jobs:  
-      - playwright-job-name
+      - playwright-job
 
